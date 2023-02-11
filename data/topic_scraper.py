@@ -25,14 +25,25 @@ class QuoraScraper:
         self.driver.get(url)
 
     def scrape(self):
-        self.open_url('https://www.fluther.com/browse/meta/')
+        self.open_url('https://www.fluther.com/topics/gifts/')
         elements = self.driver.find_elements(By.CLASS_NAME, 'row2')
         print(str(len(elements)) + "!!!!!!!!!!!!!!!!!!")
+        question_urls = []
         for element in elements:
-            print(element.text)
-        # time.sleep(100)
+            q = element.find_element(By.TAG_NAME, 'a')
+            # print(q.text)
+            href = q.get_attribute('href')
+            question_urls.append(href)
+        print(question_urls[0])
+        self.get_answer(question_urls[0])
 
 
+    def get_answer(self, link_to_question: str)-> str:
+        self.open_url(link_to_question)
+        first_answer_div = self.driver.find_element(By.CLASS_NAME, 'message')
+        first_answer = first_answer_div.find_element(By.TAG_NAME, 'p').text
+        print(first_answer)
+        return first_answer
 
 if __name__ == "__main__":
     scraper = QuoraScraper()
