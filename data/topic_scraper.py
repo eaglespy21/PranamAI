@@ -1,14 +1,16 @@
-from logging import Logger
+import json
+from logging import Logger, getLogger
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
+FLUTHER_TOPICS_URL = 'https://www.fluther.com/topics/'
 
 class QuoraScraper:
     def __init__(self):
         self.driver = ''
         self.questions = []
         self.answers = []
-        self.logger = Logger(__class__.__name__)
+        self.logger = getLogger()
 
 
     def start_driver(self):
@@ -23,11 +25,11 @@ class QuoraScraper:
         self.driver.get(url)
 
     def scrape(self, topic: str) -> None:
-        self.open_url('https://www.fluther.com/topics/' + topic)
+        self.open_url(FLUTHER_TOPICS_URL + topic)
         # TODO: find a better way to find all the questions in one shot
         elements = self.driver.find_elements(By.CLASS_NAME, 'row2')
         elements.extend(self.driver.find_elements(By.CLASS_NAME, 'row1'))
-        self.logger.info('number of questions found %d', len(elements))
+        self.logger.info('!!!!number of questions found!!! %d', len(elements))
 
         question_urls = []
         for element in elements:
