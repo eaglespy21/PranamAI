@@ -27,7 +27,7 @@ class QuoraScraper:
         # TODO: find a better way to find all the questions in one shot
         elements = self.driver.find_elements(By.CLASS_NAME, 'row2')
         elements.extend(self.driver.find_elements(By.CLASS_NAME, 'row1'))
-        self.logger.info(f'number of questions found {len(elements)}')
+        self.logger.info('number of questions found %d', len(elements))
 
         question_urls = []
         for element in elements:
