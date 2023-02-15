@@ -23,7 +23,7 @@ class QuoraScraper:
         self._open_url(FLUTHER_TOPICS_URL + topic)
         questions = self._scrape_questions()
         qa_list = self._scrape_answers(questions)
-        self._generate_json(qa_list, Path(GENERATED_DIR, topic + JSON_EXT))
+        self._generate_jsonl(qa_list, Path(GENERATED_DIR, topic + JSON_EXT))
 
     def start_driver(self):
         options = webdriver.ChromeOptions()
@@ -43,12 +43,15 @@ class QuoraScraper:
             self._open_url(url)
             first_answer_div = self.driver.find_element(By.CLASS_NAME, 'message')
             first_answer = first_answer_div.find_element(By.TAG_NAME, 'p').text
+            first_answer += ' END'
+            first_answer = ' ' + first_answer
             qa_list.append(QA(q_text, first_answer))
         return qa_list
 
-    def _generate_json(self, qa_list: QAList, filename: Path) -> None:
+    def _generate_jsonl(self, qa_list: QAList, filename: Path) -> None:
         with open(filename, 'w', encoding='utf-8') as f:
             for qa in qa_list:
+                # TODO: Handle saving single quotes
                 f.write(json.dumps(qa._asdict(), ensure_ascii=True) + '\n')
 
     def _scrape_questions(self) -> QuestionList:
