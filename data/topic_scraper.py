@@ -7,9 +7,11 @@ from data.data_types import WebElementsList, WebElement, StrList, QAList, QA, Qu
 
 FLUTHER_TOPICS_URL = 'https://www.fluther.com/topics/'
 GENERATED_DIR = 'C:\\Projects\\PranamAI\\data\\generated'
-JSON_EXT = '.json'
+JSON_EXT = '.jsonl'
+
 
 class QuoraScraper:
+
     def __init__(self):
         self.driver = ''
         self.questions = []
@@ -21,10 +23,7 @@ class QuoraScraper:
         self._open_url(FLUTHER_TOPICS_URL + topic)
         questions = self._scrape_questions()
         qa_list = self._scrape_answers(questions)
-        qa_dicts = [qa._asdict() for qa in qa_list]
-        self.logger.debug(json.dumps(qa_dicts))
-        with open(Path(GENERATED_DIR, topic + JSON_EXT), 'w', encoding='utf-8') as f:
-            json.dump(qa_dicts, f, ensure_ascii=False, indent=4)
+        self._generate_json(qa_list, Path(GENERATED_DIR, topic + JSON_EXT))
 
     def start_driver(self):
         options = webdriver.ChromeOptions()
@@ -47,9 +46,10 @@ class QuoraScraper:
             qa_list.append(QA(q_text, first_answer))
         return qa_list
 
-    def generate_json(questions, answers) -> None:
-        # TODO: Replace questions and answers as separate lists into a list of a dedicated dataclass?
-        pass
+    def _generate_json(self, qa_list: QAList, filename: Path) -> None:
+        with open(filename, 'w', encoding='utf-8') as f:
+            for qa in qa_list:
+                f.write(json.dumps(qa._asdict(), ensure_ascii=True) + '\n')
 
     def _scrape_questions(self) -> QuestionList:
         questions = []
