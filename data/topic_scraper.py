@@ -3,7 +3,7 @@ from logging import Logger, getLogger
 from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from data.data_types import WebElementsList, WebElement, StrList, QAList, QA
+from data.data_types import WebElementsList, WebElement, StrList, QAList, QA, QuestionList, Question
 
 FLUTHER_TOPICS_URL = 'https://www.fluther.com/topics/'
 GENERATED_DIR = 'C:\\Projects\\PranamAI\\data\\generated'
@@ -37,20 +37,21 @@ class QuoraScraper:
     def _open_url(self, url):
         self.driver.get(url)
 
-    def _scrape_answers(self, questions: StrList) -> QAList:
+    def _scrape_answers(self, questions: QuestionList) -> QAList:
         qa_list = []
         for question in questions:
-            self._open_url(question)
+            q_text, url = question
+            self._open_url(url)
             first_answer_div = self.driver.find_element(By.CLASS_NAME, 'message')
             first_answer = first_answer_div.find_element(By.TAG_NAME, 'p').text
-            qa_list.append(QA(question, first_answer))
+            qa_list.append(QA(q_text, first_answer))
         return qa_list
 
     def generate_json(questions, answers) -> None:
         # TODO: Replace questions and answers as separate lists into a list of a dedicated dataclass?
         pass
 
-    def _scrape_questions(self) -> QAList:
+    def _scrape_questions(self) -> QuestionList:
         questions = []
         # TODO: find a better way to find all the questions in one shot
         elements = self.driver.find_elements(By.CLASS_NAME, 'row2')
@@ -59,6 +60,6 @@ class QuoraScraper:
         for element in elements:
             q = element.find_element(By.TAG_NAME, 'a')
             href = q.get_attribute('href')
-            questions.append(href)
+            questions.append(Question(q.text, href))
         self.logger.info('type of href is %s', type(questions[0]))
         return questions

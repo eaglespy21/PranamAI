@@ -5,8 +5,13 @@ WebElementsList = list[WebElement]
 StrList = list[str]
 
 
-class QA(typing.NamedTuple):
+class Question(typing.NamedTuple):
     question: str
+    url: str
+
+
+class QA(typing.NamedTuple):
+    question: Question
     answer: str
 
     def __repr__(self) -> str:
@@ -14,3 +19,4 @@ class QA(typing.NamedTuple):
 
 
 QAList = list[QA]
+QuestionList = list[Question]
