@@ -3,7 +3,7 @@ from logging import Logger, getLogger
 from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from data.data_types import WebElementsList, WebElement, StrList, QAList, QA, QuestionList, Question
+from data.data_types import WebElementsList, WebElement, StrList, QAList, QA, QuestionList, Prompt
 
 FLUTHER_TOPICS_URL = 'https://www.fluther.com/topics/'
 GENERATED_DIR = 'C:\\Projects\\PranamAI\\data\\generated'
@@ -63,6 +63,7 @@ class QuoraScraper:
         for element in elements:
             q = element.find_element(By.TAG_NAME, 'a')
             href = q.get_attribute('href')
-            questions.append(Question(q.text, href))
+            q_text = q.text + '\n\n###\n\n'
+            questions.append(Prompt(q_text, href))
         self.logger.info('type of href is %s', type(questions[0]))
         return questions

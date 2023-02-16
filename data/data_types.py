@@ -5,18 +5,18 @@ WebElementsList = list[WebElement]
 StrList = list[str]
 
 
-class Question(typing.NamedTuple):
-    question: str
+class Prompt(typing.NamedTuple):
+    prompt: str
     url: str
 
 
 class QA(typing.NamedTuple):
-    question: Question
-    answer: str
+    prompt: Prompt
+    completion: str
 
     def __repr__(self) -> str:
-        return f'<QuestionAns {self.question}, {self.answer}>'
+        return f'<QuestionAns {self.prompt}, {self.completion}>'
 
 
 QAList = list[QA]
-QuestionList = list[Question]
+QuestionList = list[Prompt]
