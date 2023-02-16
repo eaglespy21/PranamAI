@@ -52,7 +52,7 @@ class QuoraScraper:
         with open(filename, 'w', encoding='utf-8') as f:
             for qa in qa_list:
                 # TODO: Handle saving single quotes
-                f.write(json.dumps(qa._asdict(), ensure_ascii=True) + '\n')
+                f.write(json.dumps(qa._asdict(), ensure_ascii=False) + '\n')
 
     def _scrape_questions(self) -> QuestionList:
         questions = []
